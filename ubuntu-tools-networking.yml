@@ -33,4 +33,4 @@ spec:
               command: ["/bin/sh", "-c", "apt-get update && apt-get install -y curl dnsutils iputils-ping traceroute && rm -rf /var/lib/apt/lists/*"] # Instalación de las herramientas necesarias
       volumes:
       - name: tmp-volume
-        emptyDir: {} # Un volumen vacío para la persistencia temporal de datos dentro del contenedor
+        emptyDir: {} # Un volumen  para la persistencia temporal de datos dentro del contenedor
