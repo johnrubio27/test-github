@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubuntu-tools-deployment
+  namespace: jrubio  # Especifica el namespace donde se creará el Deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ubuntu-tools
+  template:
+    metadata:
+      labels:
+        app: ubuntu-tools
+    spec:
+      containers:
+      - name: ubuntu
+        image: ubuntu:latest
+        command: ["/bin/sleep", "3650d"] # Mantiene el contenedor en ejecución
+        securityContext:
+          capabilities:
+            add: ["NET_RAW"] # Necesario para permitir el uso de herramientas de red como ping y traceroute
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: tmp-volume
+          mountPath: /tmp
+        lifecycle:
+          postStart: # Acción a realizar después de que el contenedor se inicie
+            exec: # Tipo de acción a realizar (ejecución de un comando)
+              command: ["/bin/sh", "-c", "apt-get update && apt-get install -y curl dnsutils iputils-ping traceroute && rm -rf /var/lib/apt/lists/*"] # Instalación de las herramientas necesarias
+      volumes:
+      - name: tmp-volume
+        emptyDir: {} # Un volumen vacío para la persistencia temporal de datos dentro del contenedor
